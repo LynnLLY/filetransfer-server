@@ -82,7 +82,7 @@ public class SocketServerListener extends HttpServlet {
                             System.out.println("===========操作系统是:" + osName);
                             if (osName.toLowerCase().contains("linux") || osName.toLowerCase().contains("mac")) {
                                 // copy *.sql MERGE.sql
-                                cmd = String.format("cat %s_0 %s_1 %s_2 %s_3 %s_4 %s ", s, s, s, s, s, s);
+                                cmd = String.format("cat %s_0 %s_1 %s_2 %s_3 %s_4 > %s ", s, s, s, s, s, s);
                                 System.out.println(cmd);
 
 
