@@ -78,17 +78,24 @@ public class SocketServerListener extends HttpServlet {
                             // 开始合并
                             String osName = System.getProperties().getProperty("os.name");
                             String cmd = "";
-                            System.out.println("===========操作系统是:" + osName);
+                            System.out.println("【【【【【【【操作系统是:" + osName+"】】】】】】】");
                             if (osName.toLowerCase().contains("linux") || osName.toLowerCase().contains("mac")) {
                                 // copy part1 part2 > final
                                 cmd = String.format("cat %s_0 %s_1 %s_2 %s_3 %s_4 > %s ", s, s, s, s, s, s);
-                                executeLinuxCmd(cmd);
+
+                                List<String> command = new ArrayList<>();
+                                command.add("/bin/sh");
+                                command.add("-c");
+                                command.add(cmd);
+
+                                String run = CommandUtil.run(command.toArray(new String[command.size()]));
+                                System.out.println(run.toString());
                             }
 
                             for (int i = 0; i < 5; i++) {
                                 fileMap.remove(s + "_" + i);
-                                File file = new File(s + "_" + i);
-                                file.delete();
+                                //File file = new File(s + "_" + i);
+                                //file.delete();
                             }
                         }
                     }
@@ -101,29 +108,6 @@ public class SocketServerListener extends HttpServlet {
         }, 0, 3000);
     }
 
-    public String executeLinuxCmd(String cmd) {
-        System.out.println("执行命令[ " + cmd + "]");
-        Runtime run = Runtime.getRuntime();
-        try {
-            Process process = run.exec(cmd);
-            String line;
-            BufferedReader stdoutReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
-            StringBuffer out = new StringBuffer();
-            while ((line = stdoutReader.readLine()) != null) {
-                out.append(line);
-            }
-            try {
-                process.waitFor();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            process.destroy();
-            return out.toString();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
 
 
 }
