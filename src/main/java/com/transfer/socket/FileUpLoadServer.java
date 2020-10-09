@@ -34,7 +34,7 @@ public class FileUpLoadServer extends ServerSocket {
      * @throws Exception
      */
     public void load() throws Exception {
-        System.out.println("【文件上传】服务器：" + this.getInetAddress() + this.getLocalSocketAddress()+ " 正在运行中...");
+        System.out.println("【文件上传】服务器：" + this.getInetAddress() + this.getLocalSocketAddress() + " 正在运行中...");
         while (!quit) {
             // server尝试接收其他Socket的连接请求，server的accept方法是阻塞式的
             Socket socket = this.accept();
@@ -58,7 +58,7 @@ public class FileUpLoadServer extends ServerSocket {
      */
     class Task implements Runnable {
 
-        private Socket sk;	//  当前连接
+        private Socket sk;    //  当前连接
         private String ips; //  当前连接IP址
 
         public Task(Socket socket, String ip) {
@@ -68,16 +68,16 @@ public class FileUpLoadServer extends ServerSocket {
 
         public void run() {
 
-            Socket socket = sk;					//  重新定义，请不要移出run()方法外部，否则连接两会被重置
-            String ip = ips;					//  重新定义，同上IP会变
-            long serverLength = -1l;			//  定义：存放在服务器里的文件长度，默认没有为-1
-            char pathChar = File.separatorChar;	//  获取：系统路径分隔符
-            String panFu = "D:";				//  路径：存储文件盘符
+            Socket socket = sk;                    //  重新定义，请不要移出run()方法外部，否则连接两会被重置
+            String ip = ips;                    //  重新定义，同上IP会变
+            long serverLength = -1l;            //  定义：存放在服务器里的文件长度，默认没有为-1
+            char pathChar = File.separatorChar;    //  获取：系统路径分隔符
+            String panFu = "F:";                //  路径：存储文件盘符
 
-            DataInputStream dis = null;			//  获取：客户端输出流
-            DataOutputStream dos = null;		//  发送：向客户端输入流
-            FileOutputStream fos = null;		//  读取：服务器本地文件流
-            RandomAccessFile rantmpfile = null;	//  操作类：随机读取
+            DataInputStream dis = null;            //  获取：客户端输出流
+            DataOutputStream dos = null;        //  发送：向客户端输入流
+            FileOutputStream fos = null;        //  读取：服务器本地文件流
+            RandomAccessFile rantmpfile = null;    //  操作类：随机读取
 
             try {
                 // 获取
@@ -90,7 +90,7 @@ public class FileUpLoadServer extends ServerSocket {
                     // 读取客户端传来的数据
                     fileName = dis.readUTF();
                     System.out.println("服务器获取客户端文件名称：" + fileName);
-                    File file = new File(panFu+ pathChar +"receive"+ pathChar +"" + ip + pathChar + fileName);
+                    File file = new File(panFu + pathChar + "receive" + pathChar + "" + ip + pathChar + fileName);
                     if (file.exists()) {
                         serverLength = file.length();
                         dos.writeLong(serverLength);
@@ -107,8 +107,8 @@ public class FileUpLoadServer extends ServerSocket {
                 dis = new DataInputStream(socket.getInputStream());
                 // 文件名和长度
                 long fileLength = dis.readLong();
-                File directory = new File(panFu + pathChar + "receive"+ pathChar +"" + ip + pathChar);
-                if (!directory.exists()){
+                File directory = new File(panFu + pathChar + "receive" + pathChar + "" + ip + pathChar);
+                if (!directory.exists()) {
                     directory.mkdirs();
                 }
                 int length = 0;
@@ -146,12 +146,13 @@ public class FileUpLoadServer extends ServerSocket {
                      */
                     rantmpfile.seek(pointSize);
 
-                    while ((length = dis.read(bytes, 0, bytes.length)) != -1){
+                    while ((length = dis.read(bytes, 0, bytes.length)) != -1) {
                         rantmpfile.write(bytes, 0, length);
                     }
                 }
 
                 System.out.println("======== 文件接收成功 [File Name：" + fileName + "] [ClientIP:" + ip + "] [Size：" + getFormatFileSize(file.length()) + "] ========");
+                MapRecord.fileMap.put(directory.getAbsolutePath() + pathChar + fileName, 1);
 
             } catch (Exception e) {
                 e.printStackTrace();
