@@ -76,19 +76,15 @@ public class SocketServerListener extends HttpServlet {
                         // 当count=5时，即可开始合并文件。之后需删除对应的keys.
                         if (count == 5) {
                             // 开始合并
-
                             String osName = System.getProperties().getProperty("os.name");
                             String cmd = "";
                             System.out.println("===========操作系统是:" + osName);
                             if (osName.toLowerCase().contains("linux") || osName.toLowerCase().contains("mac")) {
-                                // copy *.sql MERGE.sql
+                                // copy part1 part2 > final
                                 cmd = String.format("cat %s_0 %s_1 %s_2 %s_3 %s_4 > %s ", s, s, s, s, s, s);
-                                System.out.println(cmd);
-
-
+                                executeLinuxCmd(cmd);
                             }
-                            String result = executeLinuxCmd(cmd);
-                            System.out.println(result);
+
                             for (int i = 0; i < 5; i++) {
                                 fileMap.remove(s + "_" + i);
                                 File file = new File(s + "_" + i);
